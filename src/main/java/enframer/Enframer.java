@@ -52,7 +52,6 @@ public class Enframer extends Application {
             primaryStage.setMaxWidth(800);
             primaryStage.setMaxHeight(600);
             primaryStage.show();
-            throw new NullPointerException();
         } catch (Throwable t) {
             onErrorOccured(CrashReport.makeCrashReport(t));
         }
