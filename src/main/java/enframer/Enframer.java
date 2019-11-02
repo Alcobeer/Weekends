@@ -42,15 +42,17 @@ public class Enframer extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        FXMLLoader loader = new FXMLLoader(FileUtils.getURLFor("gui/mainGui.fxml"));
         try {
+            FXMLLoader loader = new FXMLLoader(FileUtils.getURLFor("gui/mainGui.fxml"));
             Parent root = loader.load();
             primaryStage.setTitle(NAME + "-" + VERSION);
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
             primaryStage.setResizable(false);
-            primaryStage.setMaxWidth(1850);//TODO изменить
+            primaryStage.setMaxWidth(800);
+            primaryStage.setMaxHeight(600);
             primaryStage.show();
+            throw new NullPointerException();
         } catch (Throwable t) {
             onErrorOccured(CrashReport.makeCrashReport(t));
         }
