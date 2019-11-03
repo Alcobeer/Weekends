@@ -24,7 +24,7 @@ public class WindowController<T> {
     private final String title;
 
     /**
-     * Если true, то не окно не будет давать перейти к главному окну, пока не будет закрыто.
+     * Если установлено на true, то окно не будет давать перейти к главному окну, пока не будет закрыто.
      */
     private final boolean isBoundToMainWindow;
 

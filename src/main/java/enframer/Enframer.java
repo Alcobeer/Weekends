@@ -19,7 +19,7 @@ public class Enframer extends Application {
     public static final String VERSION = "1.0.0";
     private static Enframer instance;
 
-    private volatile Stage rootWindow;
+    private Stage rootWindow;
 
     public static void launch(String[] args) {
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> onErrorOccured(CrashReport.makeCrashReport(e)));
@@ -45,9 +45,8 @@ public class Enframer extends Application {
     }
 
     @Override
-    public void init() throws Exception {
+    public void init() {
         instance = this;
-        super.init();
     }
 
     @Override
@@ -69,7 +68,7 @@ public class Enframer extends Application {
     }
 
     /**
-     * Возвращение главное окно программы.
+     * Возвращает главное окно программы.
      */
     public Stage getRootWindow() {
         return rootWindow;
