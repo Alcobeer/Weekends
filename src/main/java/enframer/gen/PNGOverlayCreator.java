@@ -1,15 +1,12 @@
 package enframer.gen;
 
-import enframer.exception.CrashReport;
-import enframer.exception.ReportedException;
-import enframer.util.FileUtilities;
+import enframer.util.RarityCategory;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 public class PNGOverlayCreator {
     private BufferedImage imageIn;
@@ -18,14 +15,14 @@ public class PNGOverlayCreator {
         this.imageIn = imageIn;
     }
 
-    public ByteArrayOutputStream genOverlayedImage(OverlayColor color) throws IOException {
+    public ByteArrayOutputStream genOverlayedImage(RarityCategory.OverlayColor color) throws IOException {
         int w = imageIn.getWidth();
         int h = imageIn.getHeight();
 
         BufferedImage overlay;
-        if (color.overlay.getWidth() != w || color.overlay.getHeight() != h) {
-            overlay = resize(color.overlay, w, h);
-        } else overlay = color.overlay;
+        if (color.getOverlay().getWidth() != w || color.getOverlay().getHeight() != h) {
+            overlay = resize(color.getOverlay(), w, h);
+        } else overlay = color.getOverlay();
 
         BufferedImage combined = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = combined.createGraphics();
@@ -53,29 +50,5 @@ public class PNGOverlayCreator {
         g2d.dispose();
 
         return outputImage;
-    }
-
-    public enum OverlayColor {
-        BLUE("blue", FileUtilities.getStreamFor("overlay/blue.png")),
-        GREEN("green", FileUtilities.getStreamFor("overlay/green.png")),
-        PURPLE("purple", FileUtilities.getStreamFor("overlay/purple.png")),
-        ORANGE("orange", FileUtilities.getStreamFor("overlay/orange.png"));
-
-        private BufferedImage overlay;
-        private String name;
-
-        OverlayColor(String name, InputStream stream) {
-            try {
-                this.overlay = ImageIO.read(stream);
-            } catch (IOException e) {
-                throw new ReportedException(CrashReport.makeCrashReport(e, "Невозможно создать перечисление цветов в PNGOverlayCreator."));
-            }
-
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
     }
 }
