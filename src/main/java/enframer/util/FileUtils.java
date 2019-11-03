@@ -19,10 +19,19 @@ public class FileUtils {
         return file.renameTo(file);
     }
 
+    /**
+     * Возвращает InputStream ресурса, находящегося внутри jar-архива этого приложения.
+     *
+     * @param resource путь до ресурса внутри jar-архива этого приложения, без указания промежуточной папки assets.
+     */
     public static InputStream getStreamFor(String resource) {
         return Enframer.class.getClassLoader().getResourceAsStream("assets/" + resource);
     }
 
+    /**
+     * Возвращает URL ресурса, находящегося внутри jar-архива этого приложения.
+     * @param resource путь до ресурса внутри jar-архива этого приложения, без указания промежуточной папки assets.
+     */
     @Nullable
     public static URL getURLFor(String resource) {
         return Enframer.class.getClassLoader().getResource("assets/" + resource);

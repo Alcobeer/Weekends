@@ -27,6 +27,10 @@ public class Enframer extends Application {
         Application.launch(Enframer.class, args);
     }
 
+    /**
+     * Доступ к главному классу программы.
+     * Реализация шаблона Singleton.
+     */
     public static Enframer getEnframer() {
         return instance;
     }
@@ -58,12 +62,12 @@ public class Enframer extends Application {
     }
 
     /**
-     * Отображает окно предупреждения с указанным сообщением.
+     * Отображает окно с указанным сообщением.
      *
-     * @param message сообщение, которое будет отображено в окне предупреждения.
+     * @param message сообщение, которое будет отображено в специальном окне.
      */
-    public void displayWarningWindow(String message) {
-        displayWindow(new WindowController<MsgGui>("gui/msgGui.fxml", Enframer.NAME + " - Предупреждение"), (stage, msgGui) -> {
+    public void displayMessageWindow(String message) {
+        displayWindow(new WindowController<MsgGui>("gui/msgGui.fxml", Enframer.NAME + " - Сообщение"), (stage, msgGui) -> {
             msgGui.setMessage(message);
             stage.setResizable(false);
         });

@@ -8,7 +8,13 @@ import javafx.scene.input.KeyEvent;
 import javafx.util.StringConverter;
 import org.jetbrains.annotations.Nullable;
 
-
+/**
+ * Ячейка для таблицы, которая автоматически сохраняет текст внутри, при потере фокуса,
+ * а также имеет поддержку перехода по другим ячейка посредством "стрелочек.
+ *
+ * @param <S> тип, из которого состоят строки таблицы
+ * @param <T> тип столбца, в котором находится ячейка
+ */
 public class EditableCell<S, T> extends TableCell<S, T> {
 
     /**

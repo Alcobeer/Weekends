@@ -16,6 +16,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.util.regex.Pattern;
 
+/**
+ * Класс отвечающий за всё то, что происходит на главном экране.
+ */
 public class MainGui {
     private static final Pattern PATTERN_RARITY_INDEX = Pattern.compile("[2-9]?");
     private static final Pattern PATTERN_LEVEL = Pattern.compile("[1-9]\\d?");
@@ -39,6 +42,9 @@ public class MainGui {
     @FXML
     private Button buttonAddAttribute;
 
+    /**
+     * Вызывается при инициализации окна через Reflection API
+     */
     @FXML
     private void initialize() {
         setupAttributeTable();
@@ -88,21 +94,21 @@ public class MainGui {
         }
 
         /**
-         * Необходимо для автоматического изменения значения внутри Property и в ячейке таблицы. Вызывается через Reflection.
+         * Необходимо для автоматического изменения значения внутри Property и в ячейке таблицы. Вызывается через Reflection API.
          */
         public StringProperty nameProperty() {
             return name;
         }
 
         /**
-         * Необходимо для автоматического изменения значения внутри Property и в ячейке таблицы. Вызывается через Reflection.
+         * Необходимо для автоматического изменения значения внутри Property и в ячейке таблицы. Вызывается через Reflection API.
          */
         public IntegerProperty valueProperty() {
             return value;
         }
 
         /**
-         * Необходимо для отображения кнопки в ячейке таблицы. Вызывается через Reflection.
+         * Необходимо для отображения кнопки в ячейке таблицы. Вызывается через Reflection API.
          */
         public Button getDeleteButton() {
             return deleteButton;

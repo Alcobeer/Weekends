@@ -29,10 +29,19 @@ public class CrashReport {
         genSystemInfo();
     }
 
+    /**
+     * Генерирует краш-репорт для сбора различных параметров приложения и последующего отображения через {@link ReportedException}.
+     *
+     * @param cause - выброшенное исключение.
+     */
     public static CrashReport makeCrashReport(Throwable cause) {
         return makeCrashReport(cause, null);
     }
 
+    /**
+     * Генерирует краш-репорт для сбора различных параметров приложения и последующего отображения через {@link ReportedException}.
+     * @param cause - выброшенное исключение.
+     */
     public static CrashReport makeCrashReport(Throwable cause, @Nullable String description) {
         if (cause instanceof ReportedException) {
             return ((ReportedException) cause).getCrashReport();
