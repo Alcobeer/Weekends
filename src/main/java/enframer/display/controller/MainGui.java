@@ -1,6 +1,6 @@
 package enframer.display.controller;
 
-import enframer.display.ConverterWithDefaultInt;
+import enframer.display.IntConverterWithDefault;
 import enframer.display.util.EditableCell;
 import enframer.display.util.PatternTextFormatter;
 import javafx.beans.property.IntegerProperty;
@@ -63,7 +63,7 @@ public class MainGui {
         columnName.setCellFactory(callback -> EditableCell.createStringEditableCell());
 
         columnValue.setCellValueFactory(new PropertyValueFactory<>("value"));
-        columnValue.setCellFactory(callback -> new EditableCell<>(new ConverterWithDefaultInt(1), new PatternTextFormatter<>(PATTERN_ATTRIBUTE_VALUE)));
+        columnValue.setCellFactory(callback -> new EditableCell<>(new IntConverterWithDefault(1), new PatternTextFormatter<>(PATTERN_ATTRIBUTE_VALUE)));
 
         columnButton.setCellValueFactory(new PropertyValueFactory<>("deleteButton"));
 
@@ -79,7 +79,7 @@ public class MainGui {
         private Button deleteButton;
 
         private Attribute() {
-            name = new SimpleStringProperty("");
+            name = new SimpleStringProperty();
             value = new SimpleIntegerProperty(1);
 
             deleteButton = new Button("Удалить");

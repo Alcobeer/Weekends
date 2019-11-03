@@ -65,7 +65,7 @@ public class CrashReport {
     }
 
     private void genSystemInfo() {
-        systemInfo.addDetail("Версия калькулятора", () -> Enframer.VERSION);
+        systemInfo.addDetail("Версия", () -> Enframer.VERSION);
         systemInfo.addDetail("Операционная система", (ICrashReportDetail<String>) () -> System.getProperty("os.name") + " (" + System.getProperty("os.arch") + "), версия - " + System.getProperty("os.version"));
         systemInfo.addDetail("Версия Java", (ICrashReportDetail<String>) () -> System.getProperty("java.version") + ", " + System.getProperty("java.vendor"));
         systemInfo.addDetail("Версия Java VM", (ICrashReportDetail<String>) () -> System.getProperty("java.vm.name") + " (" + System.getProperty("java.vm.info") + "), " + System.getProperty("java.vm.vendor"));

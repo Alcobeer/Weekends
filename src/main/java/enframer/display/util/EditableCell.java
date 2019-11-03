@@ -23,7 +23,7 @@ public class EditableCell<S, T> extends TableCell<S, T> {
 
         @Override
         public String fromString(String string) {
-            return string;
+            return string == null ? "" : string;
         }
 
     };
@@ -58,6 +58,9 @@ public class EditableCell<S, T> extends TableCell<S, T> {
                 commitEdit(this.converter.fromString(textField.getText()));
             }
         });
+
+        //Код, отвечающий за перемещение по таблице посредством нажатия "стрелочек",
+        //а также за отмену ввода посредством клавиши Esc
         textField.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ESCAPE) {
                 textField.setText(converter.toString(getItem()));
@@ -84,13 +87,13 @@ public class EditableCell<S, T> extends TableCell<S, T> {
     }
 
     /**
-     * Метод для создания EditableCell для строк
+     * Метод для создания EditableCell, поддерживающиего ввод строк
      */
     public static <S> EditableCell<S, String> createStringEditableCell() {
         return new EditableCell<>(IDENTITY_CONVERTER);
     }
 
-    // set the text of the text field and display the graphic
+    // устанавливаем текст в текстовое поле и отображаем графические элементы
     @Override
     public void startEdit() {
         super.startEdit();
@@ -99,19 +102,18 @@ public class EditableCell<S, T> extends TableCell<S, T> {
         textField.requestFocus();
     }
 
-    // revert to text display
+    // Возвращаемся к отображению текста
     @Override
     public void cancelEdit() {
         super.cancelEdit();
         setContentDisplay(ContentDisplay.TEXT_ONLY);
     }
 
-    // commits the edit. Update property if possible and revert to text display
     @Override
     public void commitEdit(T item) {
-        // This block is necessary to support commit on losing focus, because the baked-in mechanism
-        // sets our editing state to false before we can intercept the loss of focus.
-        // The default commitEdit(...) method simply bails if we are not editing...
+        // Этот блок кода необходим, для того чтобы принимать результат при убирания фокуса с ячейки
+        // потому что встроенный механизм выключает редактирующий режим до того, как мы можем перехватить потерю фокуса.
+        // Раньше реализация метода commitEdit(...) просто не работала в тот момент, когда мы не редактируем поле...
         if (!isEditing() && !item.equals(getItem())) {
             TableView<S> table = getTableView();
             if (table != null) {
