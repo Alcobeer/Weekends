@@ -4,7 +4,7 @@ import enframer.display.WindowController;
 import enframer.display.controller.ErrorGui;
 import enframer.display.controller.MsgGui;
 import enframer.exception.CrashReport;
-import enframer.util.FileUtils;
+import enframer.util.FileUtilities;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,10 +19,10 @@ public class Enframer extends Application {
     public static final String VERSION = "1.0.0";
     private static Enframer instance;
 
+    private volatile Stage rootWindow;
+
     public static void launch(String[] args) {
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> onErrorOccured(CrashReport.makeCrashReport(e)));
-
-        instance = new Enframer();
 
         Application.launch(Enframer.class, args);
     }
@@ -45,9 +45,16 @@ public class Enframer extends Application {
     }
 
     @Override
+    public void init() throws Exception {
+        instance = this;
+        super.init();
+    }
+
+    @Override
     public void start(Stage primaryStage) {
+        rootWindow = primaryStage;
         try {
-            FXMLLoader loader = new FXMLLoader(FileUtils.getURLFor("gui/mainGui.fxml"));
+            FXMLLoader loader = new FXMLLoader(FileUtilities.getURLFor("gui/mainGui.fxml"));
             Parent root = loader.load();
             primaryStage.setTitle(NAME + "-" + VERSION);
             Scene scene = new Scene(root);
@@ -59,6 +66,13 @@ public class Enframer extends Application {
         } catch (Throwable t) {
             onErrorOccured(CrashReport.makeCrashReport(t));
         }
+    }
+
+    /**
+     * Возвращение главное окно программы.
+     */
+    public Stage getRootWindow() {
+        return rootWindow;
     }
 
     /**

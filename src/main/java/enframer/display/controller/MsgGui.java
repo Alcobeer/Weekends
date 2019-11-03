@@ -7,7 +7,7 @@ import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 /**
- * Класс отвечающий за всё то, что происходит на Окне сообщения.
+ * Класс отвечающий за всё то, что происходит в Окне сообщения.
  */
 public class MsgGui {
 

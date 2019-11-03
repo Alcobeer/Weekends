@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 
 /**
- * Класс отвечающий за всё то, что происходит на Окне ошибки.
+ * Класс отвечающий за всё то, что происходит в Окне ошибки.
  */
 public class ErrorGui {
     @FXML

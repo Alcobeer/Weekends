@@ -2,10 +2,10 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="600" maxWidth="800" minHeight="600" minWidth="800"
-            prefHeight="600.0"
-            prefWidth="800.0" style="-fx-background-color: #EDEEF0;" stylesheets="@css/main.css"
-            xmlns="http://javafx.com/javafx/8" fx:controller="enframer.display.controller.MainGui">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="mainPane" maxHeight="600" maxWidth="800" minHeight="600"
+            minWidth="800" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #EDEEF0;"
+            stylesheets="@css/main.css" xmlns="http://javafx.com/javafx/8"
+            fx:controller="enframer.display.controller.MainGui">
     <children>
         <Label layoutX="328.0" layoutY="14.0" text="Путь до картинки"/>
         <TextField fx:id="fieldImagePath" layoutX="26.0" layoutY="49.0" prefHeight="39.0" prefWidth="606.0"
@@ -27,6 +27,6 @@
         <TextField fx:id="fieldLevel" alignment="CENTER" layoutX="94.0" layoutY="434.0" promptText="1-99"/>
         <TextField fx:id="fieldRarityIndex" alignment="CENTER" layoutX="476.0" layoutY="434.0" promptText="2-9"/>
         <Label layoutX="518.0" layoutY="400.0" text="Индекс ценности"/>
-        <Button layoutX="356.0" layoutY="523.0" mnemonicParsing="false" text="Готово"/>
+        <Button fx:id="buttonDone" layoutX="356.0" layoutY="523.0" mnemonicParsing="false" text="Готово"/>
     </children>
 </AnchorPane>

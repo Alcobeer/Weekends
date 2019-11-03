@@ -1,8 +1,9 @@
 package enframer.display;
 
+import enframer.Enframer;
 import enframer.exception.CrashReport;
 import enframer.exception.ReportedException;
-import enframer.util.FileUtils;
+import enframer.util.FileUtilities;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -22,13 +23,23 @@ public class WindowController<T> {
     private final FXMLLoader loader;
     private final String title;
 
+    /**
+     * Если true, то не окно не будет давать перейти к главному окну, пока не будет закрыто.
+     */
+    private final boolean isBoundToMainWindow;
+
     public WindowController(String fxmlFilePath) {
         this(fxmlFilePath, null);
     }
 
-    public WindowController(String fxmlFilePath, @Nullable String title) {
+    public WindowController(String fxmlFilePath, String title) {
+        this(fxmlFilePath, title, true);
+    }
+
+    public WindowController(String fxmlFilePath, @Nullable String title, boolean isBoundToMainWindow) {
         this.title = title;
-        this.loader = new FXMLLoader(FileUtils.getURLFor(fxmlFilePath));
+        this.loader = new FXMLLoader(FileUtilities.getURLFor(fxmlFilePath));
+        this.isBoundToMainWindow = isBoundToMainWindow;
     }
 
     private <S> S load() throws IOException {
@@ -48,15 +59,21 @@ public class WindowController<T> {
      */
     public void display(@Nullable BiConsumer<Stage, T> doOnInit) {
         Stage window = new Stage();
-        window.initModality(Modality.WINDOW_MODAL);
         try {
             Parent root = load();
-            if (doOnInit != null) {
-                doOnInit.accept(window, getController());
-            }
             if (title != null) {
                 window.setTitle(title);
             }
+
+            window.initModality(Modality.WINDOW_MODAL);
+            if (isBoundToMainWindow) {
+                window.initOwner(Enframer.getEnframer().getRootWindow());
+            }
+
+            if (doOnInit != null) {
+                doOnInit.accept(window, getController());
+            }
+
             window.setScene(new Scene(root));
             window.show();
         } catch (IOException ex) {

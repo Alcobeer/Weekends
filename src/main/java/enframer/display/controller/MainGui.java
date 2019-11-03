@@ -1,19 +1,33 @@
 package enframer.display.controller;
 
+import enframer.Enframer;
 import enframer.display.IntConverterWithDefault;
 import enframer.display.util.EditableCell;
 import enframer.display.util.PatternTextFormatter;
+import enframer.exception.CrashReport;
+import enframer.exception.ReportedException;
+import enframer.gen.PNGOverlayCreator;
+import enframer.util.FileUtilities;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.regex.Pattern;
 
 /**
@@ -23,6 +37,8 @@ public class MainGui {
     private static final Pattern PATTERN_RARITY_INDEX = Pattern.compile("[2-9]?");
     private static final Pattern PATTERN_LEVEL = Pattern.compile("[1-9]\\d?");
     private static final Pattern PATTERN_ATTRIBUTE_VALUE = Pattern.compile("^(?!(0))[0-9]{0,4}$");
+    @FXML
+    private AnchorPane mainPane;
     @FXML
     private TextField fieldImagePath;
     @FXML
@@ -41,12 +57,29 @@ public class MainGui {
     private TableColumn<Attribute, Button> columnButton;
     @FXML
     private Button buttonAddAttribute;
+    @FXML
+    private Button buttonDone;
+    /**
+     * Не показывается пользователю.
+     */
+    private VBox functional = new VBox();
 
     /**
      * Вызывается при инициализации окна через Reflection API
      */
     @FXML
     private void initialize() {
+        buttonImagePath.setOnAction(event -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Выбор входной картинки");
+            fileChooser.setInitialDirectory(new File("./"));
+            fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Изображение", "*.png", "*.jpg"));
+            File file = fileChooser.showOpenDialog(Enframer.getEnframer().getRootWindow());
+            if (file != null) {
+                fieldImagePath.setText(file.toPath().toString());
+            }
+        });
+
         setupAttributeTable();
 
         buttonAddAttribute.setOnAction(event -> {
@@ -58,6 +91,8 @@ public class MainGui {
         // Задаём допустимые символы для ввода в поля уровня и индекса ценности при помощи регулярных выражений.
         fieldRarityIndex.setTextFormatter(new PatternTextFormatter(PATTERN_RARITY_INDEX));
         fieldLevel.setTextFormatter(new PatternTextFormatter(PATTERN_LEVEL));
+
+        buttonDone.setOnAction(this::onDoneButtonClick);
     }
 
     private void setupAttributeTable() {
@@ -73,7 +108,37 @@ public class MainGui {
 
         columnButton.setCellValueFactory(new PropertyValueFactory<>("deleteButton"));
 
-        tableAttributes.getItems().add(new Attribute());//TODO если один неизмененный атрибут, игнорировать его при подсчете
+        tableAttributes.getItems().add(new Attribute());//TODO если атрибут без названия, игнорировать его при подсчете
+    }
+
+    private void onDoneButtonClick(ActionEvent event) {
+        File file = new File(fieldImagePath.getText());
+        if (file.exists()) {
+            File out = FileUtilities.openDirChoosingDialog(file);
+            genOverlayedImages(file, out);
+            Enframer.getEnframer().displayMessageWindow("Файлы успешно сгенерированы!");
+        } else {
+            Enframer.getEnframer().displayMessageWindow("PNG-картинка не найдена.\nПроверьте введённый путь.");//TODO сменить на подчеркивание красным пути до картинки?
+        }
+    }
+
+    private void genOverlayedImages(File fileIn, File dirOut) {
+        try {
+            BufferedImage image = ImageIO.read(fileIn);
+
+            PNGOverlayCreator creator = new PNGOverlayCreator(image);
+            for (PNGOverlayCreator.OverlayColor color : PNGOverlayCreator.OverlayColor.values()) {
+                ByteArrayOutputStream overlayedImage = creator.genOverlayedImage(color);
+
+                File fileOut = new File(dirOut + "/" + FileUtilities.getFileName(fileIn) + "_" + color.getName() + "." + FileUtilities.getFileExt(fileIn));
+
+                if (fileOut.exists() && FileUtilities.checkWriteAccess(fileOut)) {
+                    FileUtilities.writeTo(fileOut, overlayedImage);
+                }
+            }
+        } catch (IOException e) {
+            throw new ReportedException(CrashReport.makeCrashReport(e, "Не удалось наложить рамки на картинку."));
+        }
     }
 
     /**
@@ -90,7 +155,11 @@ public class MainGui {
 
             deleteButton = new Button("Удалить");
             deleteButton.setPrefWidth(800);
-            deleteButton.setOnAction(event -> tableAttributes.getItems().remove(this));
+            deleteButton.setOnAction(event -> {
+                tableAttributes.getItems().remove(Attribute.this);
+                //Нужно для того, чтобы сбросить фокус после удаления элемента таблицы. По умолчанию фокус отходил верхнему полю.
+                mainPane.requestFocus();
+            });
         }
 
         /**
