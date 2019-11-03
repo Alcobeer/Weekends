@@ -1,4 +1,9 @@
 .root * {
+    -fx-font-family: System;
     -fx-font-size: 18;
+}
+
+#tableAttributes .table-column, #tableAttributes .table-column .text-field {
+    -fx-alignment: CENTER;
 }
 

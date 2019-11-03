@@ -2,26 +2,30 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="600" maxWidth="800" minHeight="600"
-            minWidth="800" prefHeight="600.0" prefWidth="800.0" stylesheets="@css/main.css"
-            xmlns="http://javafx.com/javafx/8">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="600" maxWidth="800" minHeight="600" minWidth="800"
+            prefHeight="600.0"
+            prefWidth="800.0" style="-fx-background-color: #EDEEF0;" stylesheets="@css/main.css"
+            xmlns="http://javafx.com/javafx/8" fx:controller="enframer.display.controller.MainGui">
     <children>
         <Label layoutX="328.0" layoutY="14.0" text="Путь до картинки"/>
-        <TextField layoutX="26.0" layoutY="49.0" prefHeight="39.0" prefWidth="606.0" promptText="Путь до картинки"/>
-        <Button layoutX="648.0" layoutY="49.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="120.0"
-                text="Обзор"/>
+        <TextField fx:id="fieldImagePath" layoutX="26.0" layoutY="49.0" prefHeight="39.0" prefWidth="606.0"
+                   promptText="Путь до картинки"/>
+        <Button fx:id="buttonImagePath" layoutX="648.0" layoutY="49.0" mnemonicParsing="false" prefHeight="39.0"
+                prefWidth="120.0" text="Обзор"/>
         <Label layoutX="361.0" layoutY="94.0" text="Атрибуты"/>
-        <TableView layoutX="26.0" layoutY="130.0" prefHeight="207.0" prefWidth="742.0">
+        <TableView fx:id="tableAttributes" layoutX="26.0" layoutY="130.0" prefHeight="207.0" prefWidth="742.0">
             <columns>
-                <TableColumn prefWidth="426.0" text="Наименование"/>
-                <TableColumn minWidth="0.0" prefWidth="222.0" text="Значение (1-9999)"/>
-                <TableColumn prefWidth="109.0"/>
+                <TableColumn fx:id="columnName" prefWidth="367.0" resizable="false" text="Наименование"/>
+                <TableColumn fx:id="columnValue" prefWidth="238.0" resizable="false" text="Значение (1-9999)"/>
+                <TableColumn fx:id="columnButton" editable="false" prefWidth="114.0" resizable="false"
+                             sortable="false"/>
             </columns>
         </TableView>
-        <Button layoutX="316.0" layoutY="344.0" mnemonicParsing="false" text="Добавить строку"/>
+        <Button fx:id="buttonAddAttribute" layoutX="316.0" layoutY="344.0" mnemonicParsing="false"
+                text="Добавить строку"/>
         <Label layoutX="171.0" layoutY="400.0" text="Уровень"/>
-        <TextField alignment="CENTER" layoutX="94.0" layoutY="434.0" promptText="1-99"/>
-        <TextField alignment="CENTER" layoutX="476.0" layoutY="434.0" promptText="2-9"/>
+        <TextField fx:id="fieldLevel" alignment="CENTER" layoutX="94.0" layoutY="434.0" promptText="1-99"/>
+        <TextField fx:id="fieldRarityIndex" alignment="CENTER" layoutX="476.0" layoutY="434.0" promptText="2-9"/>
         <Label layoutX="518.0" layoutY="400.0" text="Индекс ценности"/>
         <Button layoutX="356.0" layoutY="523.0" mnemonicParsing="false" text="Готово"/>
     </children>
