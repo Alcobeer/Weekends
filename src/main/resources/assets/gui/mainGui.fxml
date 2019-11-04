@@ -12,8 +12,8 @@
                    promptText="Путь до картинки"/>
         <Button fx:id="buttonImagePath" layoutX="648.0" layoutY="49.0" mnemonicParsing="false" prefHeight="39.0"
                 prefWidth="120.0" text="Обзор"/>
-        <Label layoutX="361.0" layoutY="94.0" text="Атрибуты"/>
-        <TableView fx:id="tableAttributes" layoutX="26.0" layoutY="130.0" prefHeight="207.0" prefWidth="742.0">
+        <Label layoutX="361.0" layoutY="139.0" text="Атрибуты"/>
+        <TableView fx:id="tableAttributes" layoutX="26.0" layoutY="172.0" prefHeight="207.0" prefWidth="742.0">
             <columns>
                 <TableColumn fx:id="columnName" prefWidth="367.0" resizable="false" text="Наименование"/>
                 <TableColumn fx:id="columnValue" prefWidth="238.0" resizable="false" text="Значение (1-9999)"/>
@@ -21,12 +21,15 @@
                              sortable="false"/>
             </columns>
         </TableView>
-        <Button fx:id="buttonAddAttribute" layoutX="316.0" layoutY="344.0" mnemonicParsing="false"
+        <Button fx:id="buttonAddAttribute" layoutX="316.0" layoutY="385.0" mnemonicParsing="false"
                 text="Добавить строку"/>
-        <Label layoutX="171.0" layoutY="400.0" text="Уровень"/>
-        <TextField fx:id="fieldLevel" alignment="CENTER" layoutX="94.0" layoutY="434.0" promptText="1-99"/>
-        <TextField fx:id="fieldRarityIndex" alignment="CENTER" layoutX="476.0" layoutY="434.0" promptText="2-9"/>
-        <Label layoutX="518.0" layoutY="400.0" text="Индекс ценности"/>
-        <Button fx:id="buttonDone" layoutX="356.0" layoutY="523.0" mnemonicParsing="false" text="Готово"/>
+        <Label layoutX="171.0" layoutY="424.0" text="Уровень"/>
+        <TextField fx:id="fieldLevel" alignment="CENTER" layoutX="94.0" layoutY="458.0" promptText="1-99"/>
+        <TextField fx:id="fieldRarityIndex" alignment="CENTER" layoutX="476.0" layoutY="458.0" promptText="2-9"/>
+        <Label layoutX="518.0" layoutY="424.0" text="Индекс ценности"/>
+        <Button fx:id="buttonDone" layoutX="356.0" layoutY="504.0" mnemonicParsing="false" text="Готово"/>
+        <CheckBox fx:id="checkBoxFullyOverlayed" layoutX="219.0" layoutY="101.0" mnemonicParsing="false"
+                  text="Поместить в рамку всё изображение"/>
+        <Label fx:id="wrapAllImageTooltipHolder" layoutX="561.0" layoutY="101.0" text="(?)"/>
     </children>
 </AnchorPane>

@@ -5,13 +5,18 @@ import enframer.display.controller.ErrorGui;
 import enframer.display.controller.MsgGui;
 import enframer.exception.CrashReport;
 import enframer.util.FileUtilities;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Field;
 import java.util.function.BiConsumer;
 
 public class Enframer extends Application {
@@ -44,9 +49,33 @@ public class Enframer extends Application {
                 });
     }
 
-    @Override
-    public void init() {
-        instance = this;
+    /**
+     * Изменяет настройки тултипов в JavaFX через Reflection API.
+     * Меняет таймер появления на 1 секунду,
+     * а таймер исчезновения на 5 минут.
+     */
+    public static void initTooltipTimers() {
+        try {
+            Field fieldBehavior = Tooltip.class.getDeclaredField("BEHAVIOR");
+            fieldBehavior.setAccessible(true);
+            Object objBehavior = fieldBehavior.get(null);
+
+            Field fieldAppearTimer = objBehavior.getClass().getDeclaredField("activationTimer");
+            fieldAppearTimer.setAccessible(true);
+            Timeline appearTimer = (Timeline) fieldAppearTimer.get(objBehavior);
+
+            appearTimer.getKeyFrames().clear();
+            appearTimer.getKeyFrames().add(new KeyFrame(new Duration(50)));
+
+            Field fieldHideTimer = objBehavior.getClass().getDeclaredField("hideTimer");
+            fieldHideTimer.setAccessible(true);
+            Timeline hideTimer = (Timeline) fieldHideTimer.get(objBehavior);
+
+            hideTimer.getKeyFrames().clear();
+            hideTimer.getKeyFrames().add(new KeyFrame(new Duration(5 * 60 * 1000)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -92,5 +121,11 @@ public class Enframer extends Application {
 
     public <T> void displayWindow(WindowController<T> windowController, @Nullable BiConsumer<Stage, T> doOnInit) {
         windowController.display(doOnInit);
+    }
+
+    @Override
+    public void init() {
+        instance = this;
+        initTooltipTimers();
     }
 }

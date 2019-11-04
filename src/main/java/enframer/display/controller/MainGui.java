@@ -13,13 +13,10 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -33,6 +30,7 @@ public class MainGui {
     private static final Pattern PATTERN_RARITY_INDEX = Pattern.compile("[2-9]?");
     private static final Pattern PATTERN_LEVEL = Pattern.compile("(?!(0))[0-9]{0,2}$");
     private static final Pattern PATTERN_ATTRIBUTE_VALUE = Pattern.compile("^(?!(0))[0-9]{0,4}$");
+    private static final Pattern PATTERN_ATTRIBUTE_NAME = Pattern.compile("^[a-zA-Zа-яА-Я]*$");
     @FXML
     private AnchorPane mainPane;
     @FXML
@@ -55,10 +53,10 @@ public class MainGui {
     private Button buttonAddAttribute;
     @FXML
     private Button buttonDone;
-    /**
-     * Не показывается пользователю.
-     */
-    private VBox functional = new VBox();
+    @FXML
+    private CheckBox checkBoxFullyOverlayed;
+    @FXML
+    private Label wrapAllImageTooltipHolder;
 
     /**
      * Вызывается при инициализации окна через Reflection API
@@ -75,6 +73,15 @@ public class MainGui {
                 fieldImagePath.setText(file.toPath().toString());
             }
         });
+
+        Tooltip checkBoxTp = new Tooltip("Если не нажимать на флажок, конечный файл будет того же размера, " +
+                "что и исходный, однако какой-то процент картинки будет занят рамкой, что может перекрыть часть исходной картинки.\n" +
+                "Если флажок нажат, изображение останется того же размера, но рамка, как и картинка на выходе, " +
+                "будут расширены таким образом, чтобы не перекрывать исходную картинку.");
+        checkBoxTp.setWrapText(true);
+        checkBoxTp.setMaxWidth(700);
+        wrapAllImageTooltipHolder.setTooltip(checkBoxTp);
+        wrapAllImageTooltipHolder.setTextFill(Color.BLUE);
 
         setupAttributeTable();
 
@@ -99,7 +106,7 @@ public class MainGui {
         tableAttributes.setFixedCellSize(40.1);
 
         columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        columnName.setCellFactory(callback -> EditableCell.createStringEditableCell());
+        columnName.setCellFactory(callback -> new EditableCell<>(EditableCell.IDENTITY_CONVERTER, new PatternTextFormatter<>(PATTERN_ATTRIBUTE_NAME)));
 
         columnValue.setCellValueFactory(new PropertyValueFactory<>("value"));
         columnValue.setCellFactory(callback -> new EditableCell<>(new IntConverterWithDefault(1), new PatternTextFormatter<>(PATTERN_ATTRIBUTE_VALUE)));
@@ -116,7 +123,7 @@ public class MainGui {
 
             List<Attribute> attributes = tableAttributes.getItems();
             AttributeFileGenerator calculator = new AttributeFileGenerator(attributes, Integer.parseInt(fieldLevel.getText()), Integer.parseInt(fieldRarityIndex.getText()), dirOut);
-            PNGOverlayGenerator creator = new PNGOverlayGenerator(in, dirOut);
+            PNGOverlayGenerator creator = new PNGOverlayGenerator(in, dirOut, checkBoxFullyOverlayed.isSelected());
 
             String calcInit = calculator.initWithMessage();
             if (!calcInit.isEmpty()) {

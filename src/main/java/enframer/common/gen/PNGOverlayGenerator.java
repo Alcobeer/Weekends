@@ -19,8 +19,12 @@ import java.util.Map;
 public class PNGOverlayGenerator implements IFileGenerator {
     private InputImageWrapper imageWrapper;
     private HashMap<String, OutputFileWrapper> outWrappers = new HashMap<>();
+    /**
+     * Если установлено на true, рамкой будет обёрнуто всё изображение целиком без возможных перекрытий рамкой частей изображений.
+     */
+    private boolean wrapFullImage;
 
-    public PNGOverlayGenerator(File fileIn, File dirOut) {
+    public PNGOverlayGenerator(File fileIn, File dirOut, boolean wrapFullImage) {
         this.imageWrapper = new InputImageWrapper(fileIn);
 
         for (RarityCategory rarityCategory : RarityCategory.values()) {
@@ -29,6 +33,8 @@ public class PNGOverlayGenerator implements IFileGenerator {
                 outWrappers.put(rarityCategory.getName().toLowerCase(), new OutputFileWrapper(fileOut));
             }
         }
+
+        this.wrapFullImage = wrapFullImage;
     }
 
     @Override
@@ -72,15 +78,23 @@ public class PNGOverlayGenerator implements IFileGenerator {
         int w = imageWrapper.getImage().getWidth();
         int h = imageWrapper.getImage().getHeight();
 
+        int overlayW = w;
+        int overlayH = h;
+
+        if (wrapFullImage) {
+            overlayW = (int) Math.ceil(w * 1.2f);
+            overlayH = (int) Math.ceil(h * 1.2f);
+        }
+
         BufferedImage overlay;
-        if (color.getOverlay().getWidth() != w || color.getOverlay().getHeight() != h) {
-            overlay = resize(color.getOverlay(), w, h);
+        if (color.getOverlay().getWidth() != overlayW || color.getOverlay().getHeight() != overlayH) {
+            overlay = resize(color.getOverlay(), overlayW, overlayH);
         } else overlay = color.getOverlay();
 
-        BufferedImage combined = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage combined = new BufferedImage(overlayW, overlayH, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = combined.createGraphics();
+        g.drawImage(imageWrapper.getImage(), overlayW / 2 - w / 2, overlayH / 2 - h / 2, null);
         g.drawImage(overlay, 0, 0, null);
-        g.drawImage(imageWrapper.getImage(), 0, 0, null);
 
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
