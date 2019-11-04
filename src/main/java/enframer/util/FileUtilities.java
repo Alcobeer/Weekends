@@ -5,6 +5,7 @@ import javafx.stage.DirectoryChooser;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.Nullable;
 
+import javax.imageio.ImageIO;
 import java.io.*;
 import java.net.URL;
 
@@ -66,7 +67,7 @@ public class FileUtilities {
         String name = file.getName();
         int pos = name.lastIndexOf(".");
         if (pos > 0) {
-            name = name.substring(pos);
+            name = name.substring(pos + 1);
         }
 
         return name;

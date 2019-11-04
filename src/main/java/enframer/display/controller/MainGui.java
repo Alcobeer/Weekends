@@ -1,15 +1,12 @@
 package enframer.display.controller;
 
 import enframer.Enframer;
+import enframer.common.gen.AttributeFileGenerator;
+import enframer.common.gen.PNGOverlayGenerator;
 import enframer.display.IntConverterWithDefault;
 import enframer.display.util.EditableCell;
 import enframer.display.util.PatternTextFormatter;
-import enframer.exception.CrashReport;
-import enframer.exception.ReportedException;
-import enframer.gen.AttributeCalculator;
-import enframer.gen.PNGOverlayCreator;
 import enframer.util.FileUtilities;
-import enframer.util.RarityCategory;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -24,14 +21,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
-import org.apache.commons.io.FileUtils;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -91,7 +82,7 @@ public class MainGui {
             if (tableAttributes.getItems().size() < 10) {
                 tableAttributes.getItems().add(new Attribute());
             } else {
-                Enframer.getEnframer().displayMessageWindow("В таблицу можно ввести не более 10 аттрибутов!");
+                Enframer.getEnframer().displayMessageWindow("В таблицу можно ввести не более 10 атрибутов!");
             }
         });
 
@@ -115,77 +106,70 @@ public class MainGui {
 
         columnButton.setCellValueFactory(new PropertyValueFactory<>("deleteButton"));
 
-        tableAttributes.getItems().add(new Attribute());//TODO если атрибут без названия, игнорировать его при подсчете
+        tableAttributes.getItems().add(new Attribute());
     }
 
     private void onDoneButtonClick(ActionEvent event) {
-        File file = new File(fieldImagePath.getText());
-        if (!file.exists()) {
-            Enframer.getEnframer().displayMessageWindow("PNG-картинка не найдена.\nПроверьте введённый путь.");//TODO сменить на подчеркивание красным пути до картинки?
-            return;
-        } else {
-            File out = FileUtilities.openDirChoosingDialog(file);
-            if (!genAttributeFile(out)) {
+        if (checkFields()) {
+            File in = new File(fieldImagePath.getText());
+            File dirOut = FileUtilities.openDirChoosingDialog(in);
+
+            List<Attribute> attributes = tableAttributes.getItems();
+            AttributeFileGenerator calculator = new AttributeFileGenerator(attributes, Integer.parseInt(fieldLevel.getText()), Integer.parseInt(fieldRarityIndex.getText()), dirOut);
+            PNGOverlayGenerator creator = new PNGOverlayGenerator(in, dirOut);
+
+            String calcInit = calculator.initWithMessage();
+            if (!calcInit.isEmpty()) {
+                Enframer.getEnframer().displayMessageWindow("Не удалось сгенерировать файл с атрибутами.\n" + calcInit);
+                return;
+            }
+            String imageCreatorInit = creator.initWithMessage();
+            if (!imageCreatorInit.isEmpty()) {
+                Enframer.getEnframer().displayMessageWindow("Не удалось наложить рамки на картинку.\n" + imageCreatorInit);
                 return;
             }
 
-            genOverlayedImages(file, out);
+            calculator.gen();
+            creator.gen();
+
             Enframer.getEnframer().displayMessageWindow("Файлы успешно сгенерированы!");
         }
     }
 
-    private void genOverlayedImages(File fileIn, File dirOut) {
-        try {
-            BufferedImage image = ImageIO.read(fileIn);
-
-            PNGOverlayCreator creator = new PNGOverlayCreator(image);
-            for (RarityCategory rarity : RarityCategory.values()) {
-                if (rarity.hasOverlayColor()) {
-                    RarityCategory.OverlayColor color = rarity.getOverlayColor();
-                    ByteArrayOutputStream overlayedImage = creator.genOverlayedImage(color);
-
-                    File fileOut = new File(dirOut + "/" + FileUtilities.getFileName(fileIn) + "_" + rarity.getName().toLowerCase() + "." + FileUtilities.getFileExt(fileIn));
-                    FileUtils.touch(fileOut);
-                    if (fileOut.exists() && FileUtilities.checkWriteAccess(fileOut)) {
-                        FileUtilities.writeTo(fileOut, overlayedImage);
-                    }
-                }
-            }
-        } catch (IOException e) {
-            throw new ReportedException(CrashReport.makeCrashReport(e, "Не удалось наложить рамки на картинку."));
+    /**
+     * Вернёт true, если значения во всех полях будут корректны.
+     */
+    private boolean checkFields() {
+        File file = new File(fieldImagePath.getText());
+        if (!file.exists()) {
+            Enframer.getEnframer().displayMessageWindow("Пути, указанного в текстовом поле \"Путь до картинки\" не существует! Исправьте это текстовое поле.");
+            return false;
+        } else if (file.isDirectory()) {
+            Enframer.getEnframer().displayMessageWindow("Введённый путь в текстовом поле \"Путь до картинки\" ведёт к папке. Исправьте это текстовое поле.");
+            return false;
         }
-    }
 
-    private boolean genAttributeFile(File dirOut) {
-        try {
-            List<Attribute> attributes = tableAttributes.getItems();
-            if (attributes.isEmpty()) {
-                Enframer.getEnframer().displayMessageWindow("Необходимо указать хотя бы один атрибут в таблице.");
-                return false;
-            } else if (fieldLevel.getText().isEmpty()) {
-                Enframer.getEnframer().displayMessageWindow("Необходимо указать Уровень.");
-                return false;
-            } else if (fieldRarityIndex.getText().isEmpty()) {
-                Enframer.getEnframer().displayMessageWindow("Необходимо указать Индекс ценности.");
+        List<Attribute> attributes = tableAttributes.getItems();
+        if (attributes.isEmpty()) {
+            Enframer.getEnframer().displayMessageWindow("Необходимо указать хотя бы один атрибут в таблице.");
+            return false;
+        }
+
+        for (int i = 0; i < attributes.size(); i++) {
+            Attribute attribute = attributes.get(i);
+            if (attribute.name.get() == null || attribute.name.get().isEmpty()) {
+                int index = i + 1;
+                Enframer.getEnframer().displayMessageWindow("Необходимо указать название " + index + (index % 10 == 3 ? "-его" : "-ого") + " атрибута в таблице атрибутов.");
                 return false;
             }
+        }
 
-            for (int i = 0; i < attributes.size(); i++) {
-                Attribute attribute = attributes.get(i);
-                if (attribute.name.get().isEmpty()) {
-                    Enframer.getEnframer().displayMessageWindow("Необходимо указать название атрибута " + (i + 1) + " в таблице атрибутов.");
-                    return false;
-                }
-            }
-
-            AttributeCalculator calculator = new AttributeCalculator(attributes, Integer.parseInt(fieldLevel.getText()), Integer.parseInt(fieldRarityIndex.getText()));
-            String out = calculator.calcAttributeForAllCategories();
-
-            File fileOut = new File(dirOut + "/Атрибуты.txt");
-            FileUtils.writeStringToFile(fileOut, out, StandardCharsets.UTF_8, false);
-
-        } catch (IOException e) {
-            throw new ReportedException(CrashReport.makeCrashReport(e, "Не удалось сгенерировать файл с атрибутами."));
+        if (fieldLevel.getText().isEmpty()) {
+            Enframer.getEnframer().displayMessageWindow("Необходимо указать Уровень.");
+            return false;
+        } else if (fieldRarityIndex.getText().isEmpty()) {
+            Enframer.getEnframer().displayMessageWindow("Необходимо указать Индекс ценности.");
+            return false;
         }
 
         return true;

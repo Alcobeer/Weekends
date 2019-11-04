@@ -1,7 +1,8 @@
-package enframer.util;
+package enframer.common;
 
 import enframer.exception.CrashReport;
 import enframer.exception.ReportedException;
+import enframer.util.FileUtilities;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
