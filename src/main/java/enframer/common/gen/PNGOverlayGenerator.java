@@ -79,8 +79,9 @@ public class PNGOverlayGenerator implements IFileGenerator {
 
         BufferedImage combined = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = combined.createGraphics();
-        g.drawImage(imageWrapper.getImage(), 0, 0, null);
         g.drawImage(overlay, 0, 0, null);
+        g.drawImage(imageWrapper.getImage(), 0, 0, null);
+
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ImageIO.write(combined, "PNG", out);
