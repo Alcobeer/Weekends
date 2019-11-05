@@ -70,7 +70,7 @@ public class AttributeFileGenerator implements IFileGenerator {
                 int valueOut=initialValue;
                 for(int i = 0; i < rarityCategory.getRarityFactor() ; i++){
 
-                    valueOut +=Math.ceil( initialValue /100F * rarityIn);
+                    valueOut += Math.ceil(initialValue / 100F * rarityIn) * level;
 
               }
 
