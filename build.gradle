@@ -14,7 +14,7 @@ dependencies{
 
 jar {
     manifest {
-        attributes 'Main-Class': 'ru.timeconqueror.fxmlobfuscator.Main'
+        attributes 'Main-Class': 'enframer.Main'
     }
 
     from {

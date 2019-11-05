@@ -15,7 +15,7 @@ public class InputImageWrapper extends InputFileWrapper {
     }
 
     @Override
-    @NotNull String checkValidImpl() {
+    protected @NotNull String checkValidImpl() {
         String out = super.checkValidImpl();
         if (out.isEmpty()) {
             try {

@@ -12,10 +12,9 @@ public abstract class AbstractWrapper<T> implements IWrapper {
 
     /**
      * Оптимизированным образом проверяет валидность объекта внутри враппера.
-     * Метод не должен быть переопределен.
      */
     @Override
-    public @NotNull String checkValid() {
+    public final @NotNull String checkValid() {
         if (!isChecked()) {
             validResult = checkValidImpl();
         }
@@ -26,7 +25,7 @@ public abstract class AbstractWrapper<T> implements IWrapper {
     /**
      * Вернет пустую строку, если объект на входе удовлетворяет требованиям враппера.
      */
-    abstract @NotNull String checkValidImpl();
+    protected abstract @NotNull String checkValidImpl();
 
     /**
      * Возвращает объект, соедржащийся в враппере.
