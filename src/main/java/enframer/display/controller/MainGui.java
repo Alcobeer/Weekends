@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 public class MainGui {
     private static final Pattern PATTERN_RARITY_INDEX = Pattern.compile("[2-9]?");
     private static final Pattern PATTERN_LEVEL = Pattern.compile("(?!(0))[0-9]{0,2}$");
-    private static final Pattern PATTERN_ATTRIBUTE_VALUE = Pattern.compile("^(?!(0))[0-9]{0,4}$");
+    private static final Pattern PATTERN_ATTRIBUTE_VALUE = Pattern.compile("^(?!(0))[0-9]{0,3}$");
     private static final Pattern PATTERN_ATTRIBUTE_NAME = Pattern.compile("^[a-zA-Zа-яА-Я]*$");
     @FXML
     private AnchorPane mainPane;
