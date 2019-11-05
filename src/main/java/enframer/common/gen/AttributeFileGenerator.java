@@ -67,12 +67,12 @@ public class AttributeFileGenerator implements IFileGenerator {
                 int initialValue = attribute.valueProperty().get();
 
 
-                int valueOut=initialValue;
-                for(int i = 0; i < rarityCategory.getRarityFactor() ; i++){
+                int valueOut = initialValue;
 
+                for (int i = 0; i <= rarityCategory.getRarityFactor() - (level == 1 ? 1 : 0); i++) {
                     valueOut += Math.ceil(initialValue / 100F * rarityIn) * level;
+                }
 
-              }
 
 
                 b.append("   ").append(attribute.nameProperty().get()).append(": +").append(valueOut).append("\n");
