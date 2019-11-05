@@ -13,7 +13,7 @@ public class InputFileWrapper extends AbstractWrapper<File> {
     }
 
     @Override
-    @NotNull String checkValidImpl() {
+    protected @NotNull String checkValidImpl() {
         if (!getContent().exists()) {
             return String.format("Файл %s не существует.", getContent().getPath());
         } else if (!getContent().isFile()) {

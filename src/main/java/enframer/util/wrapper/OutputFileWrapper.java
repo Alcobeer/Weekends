@@ -10,7 +10,7 @@ public class OutputFileWrapper extends AbstractWrapper<File> {
     }
 
     @Override
-    @NotNull String checkValidImpl() {
+    protected @NotNull String checkValidImpl() {
         if (getContent().exists()) {
             if (!getContent().isFile()) {
                 return String.format("Объект %s не является файлом.", getContent().getPath());
