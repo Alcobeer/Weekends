@@ -65,8 +65,15 @@ public class AttributeFileGenerator implements IFileGenerator {
             StringBuilder b = new StringBuilder("======= " + rarityCategory.getName() + " =======\n");
             for (MainGui.Attribute attribute : attributes) {
                 int initialValue = attribute.valueProperty().get();
-                double rarityFactor = Math.pow(rarityCategory.getRarityFactor(), rarityIn == 0 ? 1 : Math.exp(rarityIn / 10D));
-                int valueOut = (int) (initialValue + rarityFactor * Math.max(1, level / 5D));//TODO проверить
+
+
+                int valueOut=initialValue;
+                for(int i = 0; i < rarityCategory.getRarityFactor() ; i++){
+
+                    valueOut +=Math.ceil( initialValue /100F * rarityIn);
+
+              }
+
 
                 b.append("   ").append(attribute.nameProperty().get()).append(": +").append(valueOut).append("\n");
             }
