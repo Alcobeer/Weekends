@@ -13,7 +13,7 @@
         <Button fx:id="buttonImagePath" layoutX="648.0" layoutY="49.0" mnemonicParsing="false" prefHeight="39.0"
                 prefWidth="120.0" text="Обзор"/>
         <Label layoutX="361.0" layoutY="139.0" text="Атрибуты"/>
-        <TableView fx:id="tableAttributes" layoutX="26.0" layoutY="172.0" prefHeight="207.0" prefWidth="742.0">
+        <TableView fx:id="tableAttributes" layoutX="26.0" layoutY="172.0" prefHeight="200.0" prefWidth="742.0">
             <columns>
                 <TableColumn fx:id="columnName" prefWidth="367.0" resizable="false" text="Наименование"/>
                 <TableColumn fx:id="columnValue" prefWidth="238.0" resizable="false" text="Значение (1-999)"/>
