@@ -7,3 +7,7 @@
     -fx-alignment: CENTER;
 }
 
+.table-row-cell:empty {
+    -fx-background-color: transparent;
+}
+
