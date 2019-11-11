@@ -117,7 +117,6 @@ public class MainGui {
     }
 
     private void onDoneButtonClick(ActionEvent event) {
-        System.out.println(fieldRarityIndex.getFont());
         if (checkFields()) {
             File in = new File(fieldImagePath.getText());
             File dirOut = FileUtilities.openDirChoosingDialog(in);
