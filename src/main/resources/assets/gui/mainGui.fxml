@@ -27,7 +27,7 @@
         <TextField fx:id="fieldLevel" alignment="CENTER" layoutX="94.0" layoutY="458.0" promptText="1-99"/>
         <TextField fx:id="fieldRarityIndex" alignment="CENTER" layoutX="476.0" layoutY="458.0" promptText="2-9"/>
         <Label layoutX="518.0" layoutY="424.0" text="Индекс ценности"/>
-        <Button fx:id="buttonDone" layoutX="356.0" layoutY="504.0" mnemonicParsing="false" text="Готово"/>
+        <Button fx:id="buttonDone" layoutX="323.0" layoutY="508.0" mnemonicParsing="false" text="Сгенерировать"/>
         <CheckBox fx:id="checkBoxFullyOverlayed" layoutX="219.0" layoutY="101.0" mnemonicParsing="false"
                   text="Поместить в рамку всё изображение"/>
         <Label fx:id="wrapAllImageTooltipHolder" layoutX="561.0" layoutY="101.0" text="(?)"/>
