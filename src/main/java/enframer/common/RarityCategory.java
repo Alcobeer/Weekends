@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public enum RarityCategory {
-    COMMON("Обычный", 0),
+    COMMON("Обычный", 0, FileUtilities.getStreamFor("overlay/gray.png")),
     UNCOMMON("Необычный", 1, FileUtilities.getStreamFor("overlay/blue.png")),
     RARE("Редкий", 2, FileUtilities.getStreamFor("overlay/green.png")),
     EPIC("Эпический", 3, FileUtilities.getStreamFor("overlay/purple.png")),
